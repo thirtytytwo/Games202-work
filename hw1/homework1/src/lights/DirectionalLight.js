@@ -22,20 +22,17 @@ class DirectionalLight {
         let projectionMatrix = mat4.create();
 
         // Model transform
-
-        modelMatrix[0] = scale.x;
-        modelMatrix[5] = scale.y;
-        modelMatrix[10] = scale.z;
-
-        modelMatrix[3] = translate.x;
-        modelMatrix[7] = translate.y;
-        modelMatrix[11] = translate.z;
+        //他这里是需要右乘的！！！！！！太坑了
+        //之前在这里先scale再平移导致矩阵错了，阴影求不出结果了！！！！！！
+        mat4.translate(modelMatrix, modelMatrix, translate);
+        mat4.scale(modelMatrix,modelMatrix, scale);
         // View transform
         mat4.lookAt(viewMatrix, this.lightPos, this.focalPoint, this.lightUp);
 
         // Projection transform
-        mat4.ortho(projectionMatrix, 100, 100, 100, 100, 0.03, 1000);
+        mat4.ortho(projectionMatrix, -200.0, 200.0, -200.0, 200.0, 0.03, 1000.0);
 
+        //跟我们平常的左乘不一样！！！！！！！
         mat4.multiply(lightMVP, projectionMatrix, viewMatrix);
         mat4.multiply(lightMVP, lightMVP, modelMatrix);
 
