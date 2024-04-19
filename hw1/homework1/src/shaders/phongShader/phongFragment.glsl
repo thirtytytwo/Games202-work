@@ -83,32 +83,48 @@ void uniformDiskSamples( const in vec2 randomSeed ) {
   }
 }
 
-float findBlocker( sampler2D shadowMap,  vec2 uv, float zReceiver ) {
-	return 1.0;
+float findBlocker( sampler2D shadowMap,  vec2 uv, float zReceiver, float searchSize) {
+	poissonDiskSamples(uv);
+  float result = 0.0;
+  int count = 0;
+  for(int i = 0; i < BLOCKER_SEARCH_NUM_SAMPLES; i++){
+    vec2 offset = poissonDisk[i] * searchSize;
+    float val = unpack(texture2D(shadowMap, uv + offset));
+    if(zReceiver > val){
+      result += val;
+      count++;
+    }
+  }
+  if(count == 0){
+    return -1.0;
+  }
+  result /= float(count);
+  return result;
 }
 
 float PCF(sampler2D shadowMap, vec4 shadowCoord, float filterSize) {
   poissonDiskSamples(shadowCoord.xy);
   float result = 0.0;
-  for(int i = 0; i < NUM_SAMPLES; i++){
+  for(int i = 0; i < PCF_NUM_SAMPLES; i++){
       vec2 offset = poissonDisk[i] * filterSize;
       float val = unpack(texture2D(shadowMap, shadowCoord.xy + offset));
       result += (shadowCoord.z < val + EPS) ? 1.0 : 0.0;
   }
-  result /= float(NUM_SAMPLES);
+  result /= float(PCF_NUM_SAMPLES);
   return result;
 }
 
-float PCSS(sampler2D shadowMap, vec4 shadowCoord){
+float PCSS(sampler2D shadowMap, vec4 shadowCoord, float searchSize){
 
   // STEP 1: avgblocker depth
-  
+  float blockAvg = findBlocker(shadowMap, shadowCoord.xy, shadowCoord.z, searchSize);
   // STEP 2: penumbra size
-
+  float penumbraSize = 0.0;
+  float lightSize = 0.02;
+  float dSub = shadowCoord.z - blockAvg;
+  penumbraSize = dSub / blockAvg * lightSize; 
   // STEP 3: filtering
-  
-  return 1.0;
-
+  return PCF(shadowMap, shadowCoord, penumbraSize);
 }
 
 
@@ -146,8 +162,8 @@ void main(void) {
   float visibility;
   vec4 shadowCoord = vec4((vPositionFromLight.xyz / vPositionFromLight.w) * 0.5 + 0.5, 1.0);
   //visibility = useShadowMap(uShadowMap, shadowCoord);
-  visibility = PCF(uShadowMap, shadowCoord, 0.001);
-  //visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
+  //visibility = PCF(uShadowMap, shadowCoord, 0.001);
+  visibility = PCSS(uShadowMap, shadowCoord, 0.01);
 
   vec3 phongColor = blinnPhong();
 
