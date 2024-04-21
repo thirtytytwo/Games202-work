@@ -95,6 +95,7 @@ float findBlocker( sampler2D shadowMap,  vec2 uv, float zReceiver, float searchS
       count++;
     }
   }
+  //这里要做一个除数的保护，以免infinity导致结果错误
   if(count == 0){
     return -1.0;
   }
