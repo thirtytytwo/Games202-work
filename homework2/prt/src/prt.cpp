@@ -127,8 +127,19 @@ namespace ProjEnv
                     // TODO: 此处你需要计算每个像素下cubemap某个面的球谐系数
                     Eigen::Vector3f dir = cubemapDirs[i * width * height + y * width + x];
                     int index = (y * width + x) * channel;
-                    Eigen::Array3f Le(images[i][index + 0], images[i][index + 1],
-                                      images[i][index + 2]);
+                    Eigen::Array3f Le(images[i][index + 0], images[i][index + 1], images[i][index + 2]);
+                    
+                    float deltaW = CalcArea(x, y, width, height);
+
+                    for(int l = 0; l < SHOrder; l++){
+                        for(int m = -l, m <= l; m++){
+                            Eigen::Vector3d _dir = Eigen::Vector3d(dir.x, dir.y, dir.z);
+                            double SH = sh::EvalSH(l, m, dir.normalized());
+                            //这里Le是Array3f，应该是获取了图片信息的格式是这个不用纠结
+                            //不过那这个式子应该就是把整张cubemap的每个像素采用2阶SH表达出来，这个数组里面装的是所有像素的对应阶的累加值(黎曼积分),其实就是投影过后的系数(对应阶)
+                            SHCoeffiecents[sh::GetIndex(l,m)] += Le * SH * deltaW;
+                        }
+                    }
                 }
             }
         }
