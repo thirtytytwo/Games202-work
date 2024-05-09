@@ -1,0 +1,30 @@
+^D:\GAMES202-WORK\HOMEWORK2\PRT\BUILD\CMAKEFILES\3948633CE48450EF524E45B8E0F39895\B44EXPLOGTABLE.H.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E env PATH=D:/Games202-work/homework2/prt/build/ext_build/openexr/IlmBase/Half/Release;D:/Games202-work/homework2/prt/build/ext_build/openexr/IlmBase/IlmThread/Release;D:/Games202-work/homework2/prt/build/ext_build/openexr/IlmBase/Iex/Release D:/Games202-work/homework2/prt/build/ext_build/openexr/OpenEXR/IlmImf/Release/b44ExpLogTable.exe > D:/Games202-work/homework2/prt/build/ext_build/openexr/OpenEXR/IlmImf/b44ExpLogTable.h
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\GAMES202-WORK\HOMEWORK2\PRT\BUILD\CMAKEFILES\3948633CE48450EF524E45B8E0F39895\DWALOOKUPS.H.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E env PATH=D:/Games202-work/homework2/prt/build/ext_build/openexr/IlmBase/Half/Release;D:/Games202-work/homework2/prt/build/ext_build/openexr/IlmBase/IlmThread/Release;D:/Games202-work/homework2/prt/build/ext_build/openexr/IlmBase/Iex/Release D:/Games202-work/homework2/prt/build/ext_build/openexr/OpenEXR/IlmImf/Release/dwaLookups.exe > D:/Games202-work/homework2/prt/build/ext_build/openexr/OpenEXR/IlmImf/dwaLookups.h
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\GAMES202-WORK\HOMEWORK2\PRT\EXT\OPENEXR\OPENEXR\ILMIMF\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Games202-work/homework2/prt -BD:/Games202-work/homework2/prt/build --check-stamp-file D:/Games202-work/homework2/prt/build/ext_build/openexr/OpenEXR/IlmImf/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

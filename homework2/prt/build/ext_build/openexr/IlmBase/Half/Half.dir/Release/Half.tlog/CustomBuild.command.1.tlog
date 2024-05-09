@@ -1,0 +1,38 @@
+^D:\GAMES202-WORK\HOMEWORK2\PRT\BUILD\CMAKEFILES\1D5970AF8C953A8668F56D95692571B6\ELUT.H.RULE
+setlocal
+cd D:\Games202-work\homework2\prt\build\ext_build\openexr\IlmBase\Half
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\Games202-work\homework2\prt\build\ext_build\openexr\IlmBase\Half\Release\eLut.exe > D:/Games202-work/homework2/prt/build/ext_build/openexr/IlmBase/Half/eLut.h
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\GAMES202-WORK\HOMEWORK2\PRT\BUILD\CMAKEFILES\1D5970AF8C953A8668F56D95692571B6\TOFLOAT.H.RULE
+setlocal
+cd D:\Games202-work\homework2\prt\build\ext_build\openexr\IlmBase\Half
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\Games202-work\homework2\prt\build\ext_build\openexr\IlmBase\Half\Release\toFloat.exe > D:/Games202-work/homework2/prt/build/ext_build/openexr/IlmBase/Half/toFloat.h
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\GAMES202-WORK\HOMEWORK2\PRT\EXT\OPENEXR\ILMBASE\HALF\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Games202-work/homework2/prt -BD:/Games202-work/homework2/prt/build --check-stamp-file D:/Games202-work/homework2/prt/build/ext_build/openexr/IlmBase/Half/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

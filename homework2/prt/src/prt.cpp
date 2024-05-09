@@ -131,12 +131,10 @@ namespace ProjEnv
                     
                     float deltaW = CalcArea(x, y, width, height);
 
-                    for(int l = 0; l < SHOrder; l++){
-                        for(int m = -l, m <= l; m++){
-                            Eigen::Vector3d _dir = Eigen::Vector3d(dir.x, dir.y, dir.z);
-                            double SH = sh::EvalSH(l, m, dir.normalized());
-                            //这里Le是Array3f，应该是获取了图片信息的格式是这个不用纠结
-                            //不过那这个式子应该就是把整张cubemap的每个像素采用2阶SH表达出来，这个数组里面装的是所有像素的对应阶的累加值(黎曼积分),其实就是投影过后的系数(对应阶)
+                    for(int l = 0; l <= SHOrder; l++){
+                        for(int m = -l; m <= l; m++){
+                            Eigen::Vector3d _dir(dir.x(), dir.y(), dir.z());
+                            double SH = sh::EvalSH(l, m, _dir.normalized());
                             SHCoeffiecents[sh::GetIndex(l,m)] += Le * SH * deltaW;
                         }
                     }
@@ -217,17 +215,18 @@ public:
             auto shFunc = [&](double phi, double theta) -> double {
                 Eigen::Array3d d = sh::ToVector(phi, theta);
                 const auto wi = Vector3f(d.x(), d.y(), d.z());
+                double H = wi.normalized().dot(n.normalized());
                 if (m_Type == Type::Unshadowed)
                 {
                     // TODO: here you need to calculate unshadowed transport term of a given direction
                     // TODO: 此处你需要计算给定方向下的unshadowed传输项球谐函数值
-                    return 0;
+                    return (H > 0) ? H : 0;
                 }
                 else
                 {
-                    // TODO: here you need to calculate shadowed transport term of a given direction
-                    // TODO: 此处你需要计算给定方向下的shadowed传输项球谐函数值
-                    return 0;
+                    Ray3f sampleRay = Ray3f(v, wi);
+                    if(H > 0 && !scene->rayIntersect(sampleRay)) return H;
+                    else return 0;
                 }
             };
             auto shCoeff = sh::ProjectFunction(SHOrder, shFunc, m_SampleCount);
@@ -263,7 +262,7 @@ public:
             fout << std::endl;
         }
         std::cout << "Computed SH coeffs"
-                  << " to: " << transPath.str() << std::endl;
+                << " to: " << transPath.str() << std::endl;
     }
 
     Color3f Li(const Scene *scene, Sampler *sampler, const Ray3f &ray) const
@@ -283,13 +282,6 @@ public:
 
         const Vector3f &bary = its.bary;
         Color3f c = bary.x() * c0 + bary.y() * c1 + bary.z() * c2;
-        // TODO: you need to delete the following four line codes after finishing your calculation to SH,
-        //       we use it to visualize the normals of model for debug.
-        // TODO: 在完成了球谐系数计算后，你需要删除下列四行，这四行代码的作用是用来可视化模型法线
-        if (c.isZero()) {
-            auto n_ = its.shFrame.n.cwiseAbs();
-            return Color3f(n_.x(), n_.y(), n_.z());
-        }
         return c;
     }
 

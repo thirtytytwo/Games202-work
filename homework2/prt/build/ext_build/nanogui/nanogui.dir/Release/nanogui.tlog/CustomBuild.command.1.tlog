@@ -1,0 +1,20 @@
+^D:\GAMES202-WORK\HOMEWORK2\PRT\BUILD\CMAKEFILES\05313E08F9B056AAAAF7EA6C613A9F2A\NANOGUI_RESOURCES.CPP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -DOUTPUT_C=nanogui_resources.cpp -DOUTPUT_H=nanogui_resources.h -DINPUT_FILES=D:/Games202-work/homework2/prt/ext/nanogui/resources/FontAwesome-Solid.ttf,D:/Games202-work/homework2/prt/ext/nanogui/resources/Inconsolata-Regular.ttf,D:/Games202-work/homework2/prt/ext/nanogui/resources/Roboto-Bold.ttf,D:/Games202-work/homework2/prt/ext/nanogui/resources/Roboto-Regular.ttf,D:/Games202-work/homework2/prt/ext/nanogui/resources/imageview_fragment.gl,D:/Games202-work/homework2/prt/ext/nanogui/resources/imageview_vertex.gl -P D:/Games202-work/homework2/prt/ext/nanogui/resources/bin2c.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\GAMES202-WORK\HOMEWORK2\PRT\EXT\NANOGUI\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Games202-work/homework2/prt -BD:/Games202-work/homework2/prt/build --check-stamp-file D:/Games202-work/homework2/prt/build/ext_build/nanogui/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
