@@ -6,7 +6,7 @@ class PRTMaterial extends Material {
             'uPrecomputeLG':{type: 'updateInRealTime', value: null},
             'uPrecomputeLB':{type: 'updateInRealTime', value: null},
         }, [
-            'aPrecomputLT'
+            'aPrecomputeLT'
         ], vertexShader, fragmentShader, null);
     }
 }
