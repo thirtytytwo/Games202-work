@@ -170,6 +170,7 @@ void main() {
   //SAMPLE_NUM 相当于你要trace几条射线
   for(int i = 0; i < SAMPLE_NUM; i++){
     float pdf;
+    //在这里拿出来的方向应该是基于这个点法向的半球，需要通过TBN矩阵给他转到世界空间上去
     vec3 ray = SampleHemisphereCos(s, pdf);
     vec3 normalG = GetGBufferNormalWorld(uv);
     
@@ -180,6 +181,7 @@ void main() {
     vec3 rayWS = normalize(mat3(b1,b2,normalG) * ray);
     if(RayMarch(vPosWorld.xyz, ray, hitPos)){
       vec2 hitUV = GetScreenCoordinate(hitPos.xyz);
+      //第一个evaldiffuse，是反射物当作光源(次级)，所以wi是ray，第二个是反射物自己收到的主光，回到光方向做wi
       indirectL += EvalDiffuse(rayWS, vec3(0.0), uv) / pdf * EvalDiffuse(uLightDir, vec3(0.0), hitUV) * EvalDirectionalLight(hitUV);
     }
   }
