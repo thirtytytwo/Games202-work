@@ -122,8 +122,10 @@ vec3 GetGBufferDiffuse(vec2 uv) {
  *
  */
 vec3 EvalDiffuse(vec3 wi, vec3 wo, vec2 uv) {
-  vec3 L = vec3(0.0);
-  return L;
+  vec3 diffuse = GetGBufferDiffuse(uv);
+  vec3 normalWS = normalize(GetGBufferNormalWorld(uv));
+  float lambert = max(dot(wi, normalWS), 0.);
+  return diffuse * lambert;
 }
 
 /*
@@ -132,11 +134,29 @@ vec3 EvalDiffuse(vec3 wi, vec3 wo, vec2 uv) {
  *
  */
 vec3 EvalDirectionalLight(vec2 uv) {
-  vec3 Le = vec3(0.0);
-  return Le;
+    float shadow = GetGBufferuShadow(uv);
+    return uLightRadiance * shadow;
 }
 
 bool RayMarch(vec3 ori, vec3 dir, out vec3 hitPos) {
+  //一开始是用while判断，让他的UV走出1的时候关掉，在这里(抄的)是采用一个距离，每一步0.05，这个更符合课程
+  float step = 0.05;
+  const int totalStepTimes = 150;
+  int curStepTimes = 0;
+  vec3 stepDir = normalize(dir) * step;
+  vec3 curPos = ori;
+  for(int curStepTimes = 0; curStepTimes < totalStepTimes; curStepTimes++){
+    vec2 curUV = GetScreenCoordinate(curPos);
+    //获取当前移动到的位置的深度，和深度图中记录的最近深度,当当前位置的深度大于深度图记录的最近深度，那么就相交了
+    float depthWS = GetDepth(curPos);
+    float depthSS = GetGBufferDepth(curUV);
+    if(depthWS - depthSS > 0.0001){
+      hitPos = curPos;
+      return true;
+    }
+    //按方向移动，找相交
+    curPos += stepDir;
+  }
   return false;
 }
 
@@ -144,9 +164,27 @@ bool RayMarch(vec3 ori, vec3 dir, out vec3 hitPos) {
 
 void main() {
   float s = InitRand(gl_FragCoord.xy);
+  vec2 uv = GetScreenCoordinate(vPosWorld.xyz);
+  vec3 L, indirectL;
+  L = EvalDiffuse(uLightDir, vec3(0.0), uv) * EvalDirectionalLight(uv);
+  //SAMPLE_NUM 相当于你要trace几条射线
+  for(int i = 0; i < SAMPLE_NUM; i++){
+    float pdf;
+    vec3 ray = SampleHemisphereCos(s, pdf);
+    vec3 normalG = GetGBufferNormalWorld(uv);
+    
+    vec3 b1, b2;
+    LocalBasis(normalG, b1, b2);
 
-  vec3 L = vec3(0.0);
-  L = GetGBufferDiffuse(GetScreenCoordinate(vPosWorld.xyz));
+    vec3 hitPos;
+    vec3 rayWS = normalize(mat3(b1,b2,normalG) * ray);
+    if(RayMarch(vPosWorld.xyz, ray, hitPos)){
+      vec2 hitUV = GetScreenCoordinate(hitPos.xyz);
+      indirectL += EvalDiffuse(rayWS, vec3(0.0), uv) / pdf * EvalDiffuse(uLightDir, vec3(0.0), hitUV) * EvalDirectionalLight(hitUV);
+    }
+  }
+  indirectL /= vec3(SAMPLE_NUM);
+  L = L + indirectL;
   vec3 color = pow(clamp(L, vec3(0.0), vec3(1.0)), vec3(1.0 / 2.2));
   gl_FragColor = vec4(vec3(color.rgb), 1.0);
 }
