@@ -1,0 +1,10 @@
+^D:\GAMES202-WORK\HOMEWORK4\LUT-GEN\BUILD\CMAKEFILES\60A73C68411021534EC51D2079A89DDE\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Games202-work/homework4/lut-gen -BD:/Games202-work/homework4/lut-gen/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/Games202-work/homework4/lut-gen/build/lut-gen.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
