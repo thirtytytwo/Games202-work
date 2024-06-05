@@ -27,22 +27,33 @@ Vec3f ImportanceSampleGGX(Vec2f Xi, Vec3f N, float roughness) {
     float a = roughness * roughness;
 
     //TODO: in spherical space - Bonus 1
-    float theta = atan(a * sqrt(Xi.x) / sqrt(1 - Xi.x));
-    float phi = 2 * PI * Xi.y;
+    float theta = atan(a * sqrt(Xi.x) / sqrt(1.0f - Xi.x));
+    float phi = 2.0f * PI * Xi.y;
+    
+    //TODO:from spherical space to cartesian space - Bonus 1
+    Vec3f H = Vec3f(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
 
-    //TODO: from spherical space to cartesian space - Bonus 1
-    Vec3f wi = Vec3f(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
-    //TODO: tangent coordinates - Bonus 1
+    //不理解这里为什么要转切线空间，因为传入的N永远都是一个常值(0,0,1) TBN矩阵就是一个单位矩阵，没有任何意义
+    Vec3f up = abs(N.z) < 0.999 ? Vec3f(0.0, 0.0, 1.0) : Vec3f(1.0, 0.0, 0.0);
+    Vec3f tangent = normalize(cross(up, N));
+    Vec3f bitangent = normalize(cross(N, tangent));
 
     //TODO: transform H to tangent space - Bonus 1
-    
-    return Vec3f(1.0f);
+    Vec3f result = tangent * H.x + bitangent * H.y + N * H.z;
+
+    return normalize(result);
 }
 
 float GeometrySchlickGGX(float NdotV, float roughness) {
+    //这里直接抄的第一小节的代码
     // TODO: To calculate Schlick G1 here - Bonus 1
-    
-    return 1.0f;
+    float a = roughness;
+    float k = (a * a) / 2.0f;
+
+    float nom = NdotV;
+    float denom = NdotV * (1.0f - k) + k;
+
+    return nom / denom;
 }
 
 float GeometrySmith(float roughness, float NoV, float NoL) {
@@ -55,6 +66,7 @@ float GeometrySmith(float roughness, float NoV, float NoL) {
 Vec3f IntegrateBRDF(Vec3f V, float roughness) {
 
     const int sample_count = 1024;
+    Vec3f result = Vec3f(0,0,0);
     Vec3f N = Vec3f(0.0, 0.0, 1.0);
     for (int i = 0; i < sample_count; i++) {
         Vec2f Xi = Hammersley(i, sample_count);
@@ -67,20 +79,15 @@ Vec3f IntegrateBRDF(Vec3f V, float roughness) {
         float NoV = std::max(dot(N, V), 0.0f);
         
         // TODO: To calculate (fr * ni) / p_o here - Bonus 1
-        // TODO: To calculate (fr * ni) / p_o here
-        float F = 1.0f;
-        float G = GeometrySmith(roughness, NoV, NoL);
-        //float D = DistributionGGX(N, H, roughness);
-        float nomalVal = 4 * NoL * NoV;
-        float mu = dot(N, L);
-        //在这里，公式里面的mu应该是sin(theta),但是这里用了dot,也就是cos,关于这里，论坛里面有人论证，cos和sin其实最后的值是一样的，所以在这里用了cos
-        //然后pdf,关于蒙特卡洛积分的定义(公式自带)
-        //float BRDF = F * G * D / nomalVal * mu;
+        //在这里其实是把BRDF的D项和PDF中含有的D项约掉了，F项为一，最后化简就得到这个式子，文档里面有
+        
+        float weight = GeometrySmith(roughness, NoV, NoL) * VoH / (NoV * NoH);
+        result += Vec3f(1.0, 1.0, 1.0) * weight;
         // Split Sum - Bonus 2
         
     }
 
-    return Vec3f(1.0f);
+    return result / sample_count;
 }
 
 int main() {

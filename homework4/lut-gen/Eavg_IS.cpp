@@ -85,11 +85,6 @@ int main() {
 	}
 	else 
     {
-		std::cout << resolution << " " << resolution << " " << channel << std::endl;
-        // | -----> mu(j)
-        // | 
-        // | rough（i）
-        // Flip it, if you want the data written to the texture
         uint8_t data[resolution * resolution * 3];
         float step = 1.0 / resolution;
         Vec3f Eavg = Vec3f(0.0);
