@@ -27,13 +27,12 @@ Vec3f ImportanceSampleGGX(Vec2f Xi, Vec3f N, float roughness) {
     float a = roughness * roughness;
 
     //TODO: in spherical space - Bonus 1
-
+    float theta = atan(a * sqrt(Xi.x) / sqrt(1 - Xi.x));
+    float phi = 2 * PI * Xi.y;
 
     //TODO: from spherical space to cartesian space - Bonus 1
- 
-
+    Vec3f wi = Vec3f(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
     //TODO: tangent coordinates - Bonus 1
-
 
     //TODO: transform H to tangent space - Bonus 1
     
@@ -68,8 +67,15 @@ Vec3f IntegrateBRDF(Vec3f V, float roughness) {
         float NoV = std::max(dot(N, V), 0.0f);
         
         // TODO: To calculate (fr * ni) / p_o here - Bonus 1
-
-
+        // TODO: To calculate (fr * ni) / p_o here
+        float F = 1.0f;
+        float G = GeometrySmith(roughness, NoV, NoL);
+        //float D = DistributionGGX(N, H, roughness);
+        float nomalVal = 4 * NoL * NoV;
+        float mu = dot(N, L);
+        //在这里，公式里面的mu应该是sin(theta),但是这里用了dot,也就是cos,关于这里，论坛里面有人论证，cos和sin其实最后的值是一样的，所以在这里用了cos
+        //然后pdf,关于蒙特卡洛积分的定义(公式自带)
+        //float BRDF = F * G * D / nomalVal * mu;
         // Split Sum - Bonus 2
         
     }
