@@ -70,16 +70,10 @@ Vec3f IntegrateEmu(Vec3f V, float roughness, float NdotV, Vec3f Ei) {
 
     samplePoints sampleList = squareToCosineHemisphere(sample_count);
     for (int i = 0; i < sample_count; i++) {
-        Vec3f L = sampleList.directions[i];
-        Vec3f H = normalize(V + L);
-
-        float NoL = std::max(L.z, 0.0f);
-        float NoH = std::max(H.z, 0.0f);
-        float VoH = std::max(dot(V, H), 0.0f);
-        float NoV = std::max(dot(N, V), 0.0f);
-
         // TODO: To calculate Eavg here
-
+        //这里直接抄公式了，但是这里应该是类似蒙特卡洛的积分方式？但是没有除pdf(不过我连这个pdf定义都不知道)
+        // Eavg = 2 * Emu * theta （theta = sin 但是cos 和sin积出来的值一样） 
+        Eavg += Ei * 2.0 * NdotV;
     }
 
     return Eavg / sample_count;
@@ -100,6 +94,7 @@ int main() {
         // | 
         // | rough（i）
         // flip it if you want to write the data on picture
+        //在这里为了编译通过，直接用常数了，这里变量会编译不通过
         uint8_t data[128 * 128 * 3];
         float step = 1.0 / resolution;
         Vec3f Eavg = Vec3f(0.0);

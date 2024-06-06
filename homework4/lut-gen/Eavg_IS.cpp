@@ -29,9 +29,22 @@ Vec3f ImportanceSampleGGX(Vec2f Xi, Vec3f N, float roughness) {
 
     float a = roughness * roughness;
 
-    // TODO: Copy the code from your previous work - Bonus 1
+    //TODO: in spherical space - Bonus 1
+    float theta = atan(a * sqrt(Xi.x) / sqrt(1.0f - Xi.x));
+    float phi = 2.0f * PI * Xi.y;
+    
+    //TODO:from spherical space to cartesian space - Bonus 1
+    Vec3f H = Vec3f(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
 
-    return Vec3f(1.0f);
+    //不理解这里为什么要转切线空间，因为传入的N永远都是一个常值(0,0,1) TBN矩阵就是一个单位矩阵，没有任何意义
+    Vec3f up = abs(N.z) < 0.999 ? Vec3f(0.0, 0.0, 1.0) : Vec3f(1.0, 0.0, 0.0);
+    Vec3f tangent = normalize(cross(up, N));
+    Vec3f bitangent = normalize(cross(N, tangent));
+
+    //TODO: transform H to tangent space - Bonus 1
+    Vec3f result = tangent * H.x + bitangent * H.y + N * H.z;
+
+    return normalize(result);
 }
 
 
@@ -42,20 +55,13 @@ Vec3f IntegrateEmu(Vec3f V, float roughness, float NdotV, Vec3f Ei) {
 
     for (int i = 0; i < sample_count; i++) 
     {
-        Vec2f Xi = Hammersley(i, sample_count);
-        Vec3f H = ImportanceSampleGGX(Xi, N, roughness);
-        Vec3f L = normalize(H * 2.0f * dot(V, H) - V);
-
-        float NoL = std::max(L.z, 0.0f);
-        float NoH = std::max(H.z, 0.0f);
-        float VoH = std::max(dot(V, H), 0.0f);
-        float NoV = std::max(dot(N, V), 0.0f);
-
         // TODO: To calculate Eavg here - Bonus 1
-        
+        //这里直接抄公式了，但是这里应该是类似蒙特卡洛的积分方式？但是没有除pdf(不过我连这个pdf定义都不知道)
+        // Eavg = 2 * Emu * theta （theta = sin 但是cos 和sin积出来的值一样） 
+        Eavg += Ei * 2.0 * NdotV;
     }
 
-    return Vec3f(1.0);
+    return Eavg / sample_count;
 }
 
 void setRGB(int x, int y, float alpha, unsigned char *data) {
@@ -85,7 +91,8 @@ int main() {
 	}
 	else 
     {
-        uint8_t data[resolution * resolution * 3];
+        //在这里为了编译通过，直接用常数了，这里变量会编译不通过
+        uint8_t data[128 * 128 * 3];
         float step = 1.0 / resolution;
         Vec3f Eavg = Vec3f(0.0);
 		for (int i = 0; i < resolution; i++) 
