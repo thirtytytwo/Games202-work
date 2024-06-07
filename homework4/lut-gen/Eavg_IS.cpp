@@ -91,6 +91,11 @@ int main() {
 	}
 	else 
     {
+	    std::cout << resolution << " " << resolution << " " << channel << std::endl;
+	    // | -----> mu(j)
+	    // | 
+	    // | rough（i）
+	    // flip it if you want to write the data on picture
         //在这里为了编译通过，直接用常数了，这里变量会编译不通过
         uint8_t data[128 * 128 * 3];
         float step = 1.0 / resolution;

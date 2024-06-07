@@ -22,28 +22,44 @@ const float PI = 3.14159265359;
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
-   // TODO: To calculate GGX NDF here
-    
+    // TODO: To calculate GGX NDF here
+    float a = roughness * roughness;
+    float a2 = a * a;
+    float NdotH = dot(N,H);
+    float NdotH2 = NdotH * NdotH;
+    float nom = a2;
+    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom = PI * denom * denom;
+    return nom / max(denom, 0.001);
 }
 
 float GeometrySchlickGGX(float NdotV, float roughness)
 {
-    // TODO: To calculate Schlick G1 here
-    
-    return 1.0;
+    // TODO: To calculate Smith G1 here
+    //突然发现这里k的计算跟公式里面不太一样
+    float a = roughness;
+    float k = (a * a) / 2.0;
+    float nom = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+
+    return nom / denom;
 }
 
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 {
     // TODO: To calculate Smith G here
-
-    return 1.0;
+    float NdotL = max(dot(N, L), 0.0);
+    float NdotV = max(dot(N, V), 0.0);
+    float G1 = GeometrySchlickGGX(NdotL, roughness);
+    float G2 = GeometrySchlickGGX(NdotV, roughness);
+    return G1 * G2;
 }
 
 vec3 fresnelSchlick(vec3 F0, vec3 V, vec3 H)
 {
-    // TODO: To calculate Schlick F here
-    return vec3(1.0);
+    float VdotH = dot(V, H);
+    vec3 result = F0 + (1.0 - F0) * pow(1.0 - VdotH, 5.0);
+    return result;
 }
 
 
@@ -51,8 +67,8 @@ vec3 fresnelSchlick(vec3 F0, vec3 V, vec3 H)
 vec3 AverageFresnel(vec3 r, vec3 g)
 {
     return vec3(0.087237) + 0.0230685*g - 0.0864902*g*g + 0.0774594*g*g*g
-           + 0.782654*r - 0.136432*r*r + 0.278708*r*r*r
-           + 0.19744*g*r + 0.0360605*g*g*r - 0.2586*g*r*r;
+          + 0.782654*r - 0.136432*r*r + 0.278708*r*r*r
+          + 0.19744*g*r + 0.0360605*g*g*r - 0.2586*g*r*r;
 }
 
 vec3 MultiScatterBRDF(float NdotL, float NdotV)
@@ -68,9 +84,14 @@ vec3 MultiScatterBRDF(float NdotL, float NdotV)
   vec3 F_avg = AverageFresnel(albedo, edgetint);
   
   // TODO: To calculate fms and missing energy here
+  //这里是课件里面的公式
+  vec3 fms = (vec3(1.0) - E_o) * (vec3(1.0) - E_i);
+  fms = fms / (PI * (vec3(1.0) - E_avg));
 
+  vec3 fadd = F_avg * E_avg;
+  fadd = fadd / (vec3(1.0) - F_avg *(vec3(1.0) - E_avg));
 
-  return vec3(1.0);
+  return fadd * fms;
   
 }
 
