@@ -1,0 +1,10 @@
+^D:\CODEWORK\GAMES202\HOMEWORK5\HOMEWORK5\BUILD\CMAKEFILES\B35478AA789BA63A3FC4215A6055E945\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/CodeWork/Games202/homework5/homework5 -BD:/CodeWork/Games202/homework5/homework5/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/CodeWork/Games202/homework5/homework5/build/Denoise.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

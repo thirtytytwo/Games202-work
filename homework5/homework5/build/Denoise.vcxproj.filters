@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\CodeWork\Games202\homework5\homework5\src\denoiser.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\CodeWork\Games202\homework5\homework5\src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\CodeWork\Games202\homework5\homework5\src\util\image.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\CodeWork\Games202\homework5\homework5\src\util\imageutil.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\CodeWork\Games202\homework5\homework5\src\util\mathutil.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\CodeWork\Games202\homework5\homework5\src\denoiser.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\CodeWork\Games202\homework5\homework5\src\ext\filesystem\fwd.h">
+      <Filter>src\ext\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\CodeWork\Games202\homework5\homework5\src\ext\filesystem\path.h">
+      <Filter>src\ext\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\CodeWork\Games202\homework5\homework5\src\ext\filesystem\resolver.h">
+      <Filter>src\ext\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\CodeWork\Games202\homework5\homework5\src\ext\tinyexr\tinyexr.h">
+      <Filter>src\ext\tinyexr</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\CodeWork\Games202\homework5\homework5\src\util\buffer.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\CodeWork\Games202\homework5\homework5\src\util\common.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\CodeWork\Games202\homework5\homework5\src\util\image.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\CodeWork\Games202\homework5\homework5\src\util\imageutil.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\CodeWork\Games202\homework5\homework5\src\util\mathutil.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\CodeWork\Games202\homework5\homework5\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{57910719-BF80-39E9-B2FE-143124CAB87F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ext">
+      <UniqueIdentifier>{042BC90A-875B-3B12-ABB5-CE6652A4A7CE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ext\filesystem">
+      <UniqueIdentifier>{F6C7CBB7-FD11-38DC-A4A1-B397814A3E48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ext\tinyexr">
+      <UniqueIdentifier>{CFB0FB6B-5FBA-3D56-B17F-8BF61B6AAA1A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{CB1F1E70-8D92-3D87-A92C-373C9EA02549}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
