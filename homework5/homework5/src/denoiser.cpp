@@ -47,7 +47,7 @@ void Denoiser::Reprojection(const FrameInfo &frameInfo) {
 void Denoiser::TemporalAccumulation(const Buffer2D<Float3> &curFilteredColor) {
     int height = m_accColor.m_height;
     int width = m_accColor.m_width;
-    int kernelRadius = 3;
+    int kernelRadius = 7;
 #pragma omp parallel for
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
@@ -55,6 +55,30 @@ void Denoiser::TemporalAccumulation(const Buffer2D<Float3> &curFilteredColor) {
             Float3 color = m_accColor(x, y);
             // TODO: Exponential moving average
             float alpha = 1.0f;
+            if(m_valid(x, y)){
+                alpha = m_alpha;
+                int count = 0;
+                Float3 mu(0.f);
+                Float3 sigma(0.f);
+                int x_start = std::max(0, x - kernelRadius);
+                int x_end = std::min(width - 1, x + kernelRadius);
+                int y_start = std::max(0, y - kernelRadius);
+                int y_end = std::min(height - 1, y + kernelRadius);
+                for(int i = x_start; i < x_end; i++){
+                    for(int j = y_start; j < y_end; j++){
+                        mu += curFilteredColor(i, j);
+                        count++;
+                    }
+                }
+                mu /= float(count);
+                for(int i = x_start; i < x_end; i++){
+                    for(int j = y_start; j < y_end; j++){
+                        sigma += Sqr(curFilteredColor(i, j) - mu);
+                    }
+                }
+                sigma = SafeSqrt(sigma / float(count));
+                color = Clamp(color, mu - sigma * m_colorBoxK, mu + sigma * m_colorBoxK);
+            }
             m_misc(x, y) = Lerp(color, curFilteredColor(x, y), alpha);
         }
     }
